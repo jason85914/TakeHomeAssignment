@@ -8,12 +8,13 @@ Session = sessionmaker(bind=engine)
 
 app = Flask(__name__)
 
+# get raw data from API and save to database
 @app.route('/')
-# 取得原始資料並存入資料庫
 def get_raw_data():
     symbols = ['IBM', 'AAPL']
     api_key = os.environ.get('ALPHA_VANTAGE_API_KEY')
-    # 從 API 取得原始資料
+   
+    # get data from API
     base_url = 'https://www.alphavantage.co/query'
     data = []
     for symbol in symbols:
@@ -40,7 +41,8 @@ def get_raw_data():
             print(f'{api_key}')
             continue
         for date, values in raw_data.items():
-            # 只處理最近兩周的資料
+           
+            # only store data for the last 14 days
             if datetime.strptime(date, '%Y-%m-%d').date() >= datetime.today().date() - timedelta(days=14):
                 data.append(FinancialData(
                     symbol=symbol,
@@ -52,7 +54,8 @@ def get_raw_data():
                     volume=int(values['6. volume'])
                 ))
     session = Session()
-    # 檢查每筆資料是否已經存在於資料庫中
+    
+    # check if data exists in database
     for item in data:
         symbol = item['symbol']
         date = item['date']
@@ -60,9 +63,12 @@ def get_raw_data():
         count = session.query(FinancialData).filter_by(symbol=symbol, date=date).count()
 
         if count == 0:
-            # 如果資料不存在，則插入到資料庫中
+           
+            # if data does not exist, add to database
             financial_data = item
             session.add(financial_data)
+    
+    # commit changes
     session.commit()
     session.close()
     return 'Data retrieved and stored successfully!'

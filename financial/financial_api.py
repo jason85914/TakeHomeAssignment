@@ -12,14 +12,14 @@ Session = sessionmaker(bind=engine)
 @app.route('/api/financial_data')
 def get_financial_data():
     try:
-        # 從 URL 參數中獲取 start_date、end_date、symbol、limit 和 page 等參數
+        # get query parameters from request
         start_date = request.args.get('start_date')
         end_date = request.args.get('end_date')
         symbol = request.args.get('symbol')
         limit = int(request.args.get('limit', 5))
         page = int(request.args.get('page', 1))
 
-        # 使用 SQLAlchemy 從資料庫中獲取財務數據
+        # get data from database and calculate pagination
         session = Session()
         query = session.query(FinancialData).filter(FinancialData.symbol == symbol)
         if start_date:
@@ -50,7 +50,7 @@ def get_financial_data():
         data = query.offset((page - 1) * limit).limit(limit).all()
         session.close()
 
-        # 將獲取的數據轉換為 JSON 格式並返回給客戶端
+        # create result
         result = {
             'data': [{
                 'symbol': d.symbol,
@@ -86,6 +86,7 @@ def get_financial_data():
 @app.route('/api/statistics')
 def get_statistics():
     try:
+        # get query parameters from request
         start_date = request.args.get('start_date')
         end_date = request.args.get('end_date')
         symbol = request.args.get('symbol')
@@ -103,6 +104,8 @@ def get_statistics():
             })
 
         query = session.query(FinancialData).filter(FinancialData.symbol == symbol)
+       
+        # Filter by date
         if start_date:
             try:
                 start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
