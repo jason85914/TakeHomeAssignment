@@ -1,23 +1,23 @@
-# 使用 Python 3.8 作為基礎映像
+# Use Python 3.8 as the base image
 FROM python:3.8
 
-# 設置工作目錄
+# Set the working directory
 WORKDIR /app
 
-# 將要求文件複製到容器中
+# Copy the requirements file into the container
 COPY requirements.txt .
 
-# 安裝所需的依賴項
+# Install the required dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# 將應用程序代碼複製到容器中
+# Copy the application code into the container
 COPY . .
 
-# 暴露端口
+# Expose the port
 EXPOSE 5000
 
-# 定義啟動命令
-CMD ["python", "get_raw_data.py"]
+# Define the startup command
+CMD ["python", "financial_api.py"]
 
-# 使用--env-file選項將.env文件中的環境變量包含在映像中
+# Include environment variables from the .env file in the image using the --env-file option
 RUN set -o allexport; source $ENV_FILE; set +o allexport

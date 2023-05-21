@@ -9,6 +9,10 @@ app = Flask(__name__)
 engine = create_engine('sqlite:///financial_data.db')
 Session = sessionmaker(bind=engine)
 
+@app.route('/')
+def Home():
+    return 'Connected!'
+
 @app.route('/api/financial_data')
 def get_financial_data():
     try:
