@@ -2,7 +2,7 @@
 
 ## Project Description
 
-This project is a Python API service that retrieves financial data from AlphaVantage API, processes the data, and stores it in a local database. It also provides two API endpoints to retrieve financial data and statistics.
+This project is a Python API service that retrieves financial data from AlphaVantage API  for the recent two weeks, processes the data, and stores it in a local database. It also provides two API endpoints to retrieve financial data and statistics.
 
 ## Tech Stack
 
@@ -21,7 +21,20 @@ This project is a Python API service that retrieves financial data from AlphaVan
 5. Run `python get_raw_data.py` to retrieve and process financial data from AlphaVantage API and store it in the local database.
 6. Build the Docker image using `docker build -t financial-api .`.
 7. Run `docker-compose up` to start the API service and the database.
-8. Access the API endpoints using a web browser or a tool like `curl`.
+
+## Example: Checking Container Status
+
+To check the status of the Docker container, you can use the `docker ps` command. This command will show you a list of all running containers, along with their container IDs and names.
+
+`docker ps --format "table {{.ID}}\t{{.Names}}"`
+
+This command will output a table with the container ID and name for each running container.
+
+Once you have the container ID, you can use the docker exec command to run a command inside the container. For example, you can use the following command to send a GET request to the API and check if it is running:
+
+`docker exec -it <container-id> curl "http://localhost:5000"`
+
+You should replace <container-id> with the actual container ID. If the API is running, you should see the message "Connected!" in the output.
 
 ## Maintaining API Key
 
